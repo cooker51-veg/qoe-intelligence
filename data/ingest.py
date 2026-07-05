@@ -1,14 +1,17 @@
 """
 Data ingestion for QoE Intelligence.
 1. Pulls reported financials via yfinance (structured, headline numbers).
+   Cached for 1 hour to avoid hitting Yahoo Finance rate limits on repeated calls.
 2. Extracts footnote/MD&A text from an uploaded annual report PDF (unstructured,
    where real QoE red flags actually live - related-party notes, contingencies,
    one-off items buried in disclosures).
 """
 import yfinance as yf
 import pdfplumber
+import streamlit as st
 
 
+@st.cache_data(ttl=3600, show_spinner=False)
 def fetch_reported_financials(ticker: str) -> dict:
     t = yf.Ticker(ticker)
     try:

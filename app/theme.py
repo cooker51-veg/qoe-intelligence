@@ -1,158 +1,173 @@
-"""Custom CSS injected into the Streamlit app to override the default look
-and achieve a Big 4 advisory report aesthetic."""
+"""Custom CSS - dark advisory-grade theme, Fraunces serif headers + Inter body,
+muted gold accent. Designed to read as a deliberate brand identity, not a
+generic AI-generated dashboard."""
 
 CUSTOM_CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-    --navy: #1A2332;
-    --charcoal: #2D3748;
-    --gold: #B8860B;
-    --gold-light: #D4A017;
-    --cream: #F4F2ED;
-    --border-grey: #D1D5DB;
+    --bg-deep: #0B0E16;
+    --bg-surface: #111827;
+    --bg-surface-2: #161F30;
+    --bg-sidebar: #090C12;
+    --gold: #C9A227;
+    --gold-bright: #DDBA4A;
+    --border: #232E42;
+    --text-primary: #EDEFF2;
+    --text-dim: #8993A6;
+    --text-faint: #5C6579;
 }
 
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
 }
 
-/* Kill default Streamlit chrome */
+.stApp { background: var(--bg-deep); }
+
 #MainMenu, footer, header {visibility: hidden;}
+[data-testid="collapsedControl"] { display: none !important; }
+[data-testid="stSidebarCollapseButton"] { display: none !important; }
+button[kind="header"] { display: none !important; }
 
-.block-container {
-    padding-top: 2rem;
-    max-width: 1100px;
-}
+.block-container { padding-top: 2.5rem; max-width: 1080px; }
 
-/* Report cover / header block */
+/* Header */
 .report-header {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--charcoal) 100%);
-    color: white;
-    padding: 40px 48px;
-    border-radius: 4px;
-    margin-bottom: 32px;
-    border-left: 6px solid var(--gold);
+    padding: 0 0 20px 0;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+}
+.report-header .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
 }
 .report-header h1 {
-    font-family: 'Source Serif 4', serif;
-    font-weight: 700;
-    font-size: 2.1rem;
-    margin-bottom: 4px;
-    color: white;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 2.3rem;
+    color: var(--text-primary);
+    margin: 6px 0 4px 0;
+    letter-spacing: -0.5px;
 }
 .report-header .subtitle {
-    font-size: 0.95rem;
-    color: #C8CDD6;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    font-size: 0.92rem;
+    color: var(--text-dim);
 }
 .report-header .confidential {
-    margin-top: 16px;
-    font-size: 0.75rem;
-    color: var(--gold-light);
-    letter-spacing: 1px;
+    margin-top: 14px;
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    letter-spacing: 0.8px;
     text-transform: uppercase;
-    border-top: 1px solid rgba(255,255,255,0.15);
-    padding-top: 12px;
 }
 
-/* Exhibit section labels */
+/* Exhibit labels */
 .exhibit-label {
-    font-family: 'Source Serif 4', serif;
-    font-weight: 700;
-    font-size: 1.3rem;
-    color: var(--navy);
-    border-bottom: 2px solid var(--gold);
-    padding-bottom: 8px;
-    margin-top: 32px;
-    margin-bottom: 16px;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-top: 36px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gold);
+    display: inline-block;
 }
 
 /* Metric cards */
 .metric-card {
-    background: var(--cream);
-    border: 1px solid var(--border-grey);
-    border-left: 4px solid var(--gold);
-    border-radius: 2px;
-    padding: 20px 24px;
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 22px;
 }
 .metric-card .metric-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--charcoal);
-    opacity: 0.7;
+    letter-spacing: 1px;
+    color: var(--text-dim);
 }
 .metric-card .metric-value {
-    font-family: 'Source Serif 4', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--navy);
-    margin-top: 4px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--gold-bright);
+    margin-top: 6px;
 }
 
-/* Risk flag callouts */
+/* Risk flags */
 .risk-flag {
-    border-radius: 2px;
+    border-radius: 6px;
     padding: 14px 18px;
     margin-bottom: 10px;
-    border-left: 4px solid;
+    border-left: 3px solid;
+    background: var(--bg-surface-2);
 }
-.risk-flag.high { background: #FDF2F2; border-color: #C0392B; }
-.risk-flag.medium { background: #FEF9E7; border-color: var(--gold); }
-.risk-flag.low { background: #F0F4F8; border-color: #7F8C9A; }
-.risk-flag .flag-title { font-weight: 600; color: var(--navy); }
+.risk-flag.high { border-color: #D45A5A; }
+.risk-flag.medium { border-color: var(--gold); }
+.risk-flag.low { border-color: var(--text-faint); }
+.risk-flag .flag-title { font-weight: 600; color: var(--text-primary); }
 .risk-flag .flag-severity {
-    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
-    font-weight: 700; margin-right: 8px;
+    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.6px;
+    font-weight: 700; margin-right: 8px; color: var(--text-dim);
 }
 
-/* Memo text block */
+/* Memo block */
 .memo-block {
-    background: white;
-    border: 1px solid var(--border-grey);
-    border-radius: 2px;
-    padding: 32px;
-    font-family: 'Source Serif 4', serif;
-    line-height: 1.7;
-    color: #1F2937;
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 30px 34px;
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--text-primary);
 }
 
 /* Sidebar */
 [data-testid="stSidebar"] {
-    background: var(--navy);
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
 }
-[data-testid="stSidebar"] * {
-    color: #E5E7EB !important;
-}
+[data-testid="stSidebar"] * { color: var(--text-primary) !important; }
 [data-testid="stSidebar"] input {
-    color: var(--navy) !important;
+    background: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 6px !important;
 }
 
-/* Buttons */
+[data-testid="stTable"], .stDataFrame { background: var(--bg-surface-2) !important; }
+
+[data-testid="stAlert"] {
+    background: var(--bg-surface-2) !important;
+    border-left: 3px solid var(--gold) !important;
+    color: var(--text-primary) !important;
+    border-radius: 6px !important;
+}
+
 .stButton > button {
-    background: var(--navy);
-    color: white;
-    border: none;
-    border-radius: 2px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    padding: 10px 24px;
-}
-.stButton > button:hover {
     background: var(--gold);
-    color: var(--navy);
+    color: #0B0E16;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    padding: 10px 22px;
 }
+.stButton > button:hover { background: var(--gold-bright); color: #0B0E16; }
 
-/* Footer disclaimer */
 .report-footer {
-    margin-top: 48px;
+    margin-top: 44px;
     padding-top: 16px;
-    border-top: 1px solid var(--border-grey);
-    font-size: 0.72rem;
-    color: #6B7280;
+    border-top: 1px solid var(--border);
+    font-size: 0.7rem;
+    color: var(--text-faint);
     text-align: center;
 }
 </style>

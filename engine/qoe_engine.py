@@ -124,3 +124,28 @@ def build_ebitda_bridge(reported_ebitda: float, adjustments: list) -> dict:
         "auto_adjustments": auto_adjustments,
         "flagged_for_review": review_only,
     }
+
+
+def plain_english_conclusion(bridge: dict) -> str:
+    """
+    A simple, jargon-free summary of what the analysis found - deterministic,
+    not AI-generated, so it's always consistent and instantly available.
+    """
+    pct = bridge["adjustment_pct_of_reported"]
+    if pct is None:
+        return "Not enough data was available to draw a conclusion."
+
+    abs_pct = abs(pct)
+    if abs_pct < 5:
+        quality = "look strong — reported profit closely matches the company's real, repeatable performance."
+    elif abs_pct < 15:
+        quality = "look reasonably solid, though a moderate slice of reported profit came from one-off items rather than the core business."
+    else:
+        quality = "deserve a closer look — a significant portion of reported profit came from one-time or unusual items, not day-to-day operations."
+
+    return (
+        f"In simple terms: this company reported EBITDA of {bridge['reported_ebitda']:,.0f}. "
+        f"After removing one-off and unusual items, the real, repeatable EBITDA is "
+        f"{bridge['normalized_ebitda']:,.0f} — a {pct:.1f}% adjustment. "
+        f"This company's earnings {quality}"
+    )

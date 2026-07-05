@@ -28,7 +28,6 @@ def compute_reported_ebitda(income_stmt: pd.DataFrame) -> pd.Series:
             break
 
     if ebitda is None:
-        # fallback: Operating Income + D&A
         op_income_col = next((c for c in ["Operating Income", "EBIT"] if c in income_stmt.columns), None)
         da_col = next((c for c in ["Depreciation And Amortization", "Reconciled Depreciation"]
                        if c in income_stmt.columns), None)
@@ -51,20 +50,18 @@ def screen_rule_based_adjustments(income_stmt: pd.DataFrame,
     """
     adjustments = []
 
-    # 1. Exceptional / unusual items - common in Indian reporting (Ind AS)
     for col in ["Unusual Items", "Special Income Charges", "Exceptional Items"]:
         if col in income_stmt.columns:
-            val = income_stmt[col].iloc[0]  # most recent year
+            val = income_stmt[col].iloc[0]
             if pd.notna(val) and abs(val) > 0:
                 adjustments.append(Adjustment(
                     label=f"Exceptional/unusual item ({col})",
-                    amount=-val,  # reverse it out to normalize
+                    amount=-val,
                     category="rule_based",
                     rationale=f"Reported {col} of {val:,.0f} in most recent period - "
                               f"reversed out as non-recurring for normalized EBITDA."
                 ))
 
-    # 2. Working capital swings (receivables/inventory/payables)
     wc_lines = ["Receivables", "Inventory", "Accounts Payable", "Payables"]
     for line in wc_lines:
         matching_cols = [c for c in balance_sheet.columns if line.lower() in c.lower()]
@@ -75,14 +72,13 @@ def screen_rule_based_adjustments(income_stmt: pd.DataFrame,
                 if abs(yoy_pct) > working_capital_swing_threshold_pct:
                     adjustments.append(Adjustment(
                         label=f"Unusual working capital swing - {col}",
-                        amount=0.0,  # flagged for review, not auto-adjusted into EBITDA
+                        amount=0.0,
                         category="rule_based",
                         rationale=f"{col} moved {yoy_pct:.1f}% YoY, exceeding the "
                                   f"{working_capital_swing_threshold_pct}% threshold - "
                                   f"may indicate channel stuffing, factoring, or payment timing shifts."
                     ))
 
-    # 3. Forex / other income volatility
     for col in ["Other Non Operating Income Expenses", "Net Non Operating Interest Income Expense"]:
         if col in income_stmt.columns:
             series = income_stmt[col].dropna()

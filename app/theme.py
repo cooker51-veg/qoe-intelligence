@@ -1,6 +1,5 @@
 """Custom CSS - dark advisory-grade theme, Fraunces serif headers + Inter body,
-muted gold accent. Designed to read as a deliberate brand identity, not a
-generic AI-generated dashboard."""
+muted gold accent. Sidebar is forced permanently open (no collapse toggle)."""
 
 CUSTOM_CSS = """
 <style>
@@ -30,6 +29,21 @@ html, body, [class*="css"] {
 [data-testid="collapsedControl"] { display: none !important; }
 [data-testid="stSidebarCollapseButton"] { display: none !important; }
 button[kind="header"] { display: none !important; }
+
+/* Force sidebar permanently open - no collapse possible */
+[data-testid="stSidebar"] {
+    min-width: 320px !important;
+    max-width: 320px !important;
+    transform: none !important;
+    visibility: visible !important;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+}
+[data-testid="stSidebar"][aria-expanded="false"] {
+    min-width: 320px !important;
+    max-width: 320px !important;
+    margin-left: 0px !important;
+}
 
 .block-container { padding-top: 2.5rem; max-width: 1080px; }
 
@@ -129,11 +143,6 @@ button[kind="header"] { display: none !important; }
     color: var(--text-primary);
 }
 
-/* Sidebar */
-[data-testid="stSidebar"] {
-    background: var(--bg-sidebar);
-    border-right: 1px solid var(--border);
-}
 [data-testid="stSidebar"] * { color: var(--text-primary) !important; }
 [data-testid="stSidebar"] input {
     background: var(--bg-surface) !important;

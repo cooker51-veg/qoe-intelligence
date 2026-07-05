@@ -21,9 +21,10 @@ st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 # ---------- REPORT HEADER ----------
 st.markdown("""
 <div class="report-header">
+    <div class="eyebrow">Financial Due Diligence</div>
     <h1>QoE Intelligence</h1>
-    <div class="subtitle">AI-Augmented Quality of Earnings &amp; Financial Due Diligence</div>
-    <div class="confidential">Draft for Internal Discussion Purposes Only — Not Investment Advice</div>
+    <div class="subtitle">AI-augmented quality of earnings analysis and normalized EBITDA reporting</div>
+    <div class="confidential">Draft for internal discussion purposes only — not investment advice</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -108,15 +109,18 @@ fig = go.Figure(go.Waterfall(
     measure=["absolute"] + ["relative"] * (len(bridge["bridge_steps"]) - 2) + ["total"],
     x=[s["label"] for s in bridge["bridge_steps"]],
     y=[s["value"] for s in bridge["bridge_steps"]],
-    connector={"line": {"color": "#D1D5DB"}},
-    decreasing={"marker": {"color": "#C0392B"}},
-    increasing={"marker": {"color": "#7F8C9A"}},
-    totals={"marker": {"color": "#1A2332"}},
+    connector={"line": {"color": "#232E42"}},
+    decreasing={"marker": {"color": "#D45A5A"}},
+    increasing={"marker": {"color": "#6B7C93"}},
+    totals={"marker": {"color": "#C9A227"}},
 ))
 fig.update_layout(
     showlegend=False,
-    plot_bgcolor="white",
-    font=dict(family="Inter, sans-serif", color="#1A2332"),
+    plot_bgcolor="#161F30",
+    paper_bgcolor="#161F30",
+    font=dict(family="Inter, sans-serif", color="#EDEFF2"),
+    xaxis=dict(gridcolor="#232E42", color="#EDEFF2"),
+    yaxis=dict(gridcolor="#232E42", color="#EDEFF2"),
     margin=dict(t=20, b=20),
     height=420,
 )

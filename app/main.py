@@ -15,7 +15,8 @@ from data.ingest import fetch_reported_financials, extract_pdf_text, find_releva
 from engine.qoe_engine import compute_reported_ebitda, screen_rule_based_adjustments, build_ebitda_bridge
 from ai.qoe_ai import identify_footnote_red_flags, generate_qoe_memo
 
-st.set_page_config(page_title="QoE Intelligence", layout="wide", page_icon="📊")
+st.set_page_config(page_title="QoE Intelligence", layout="wide", page_icon="📊",
+                    initial_sidebar_state="expanded")
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 # ---------- REPORT HEADER ----------

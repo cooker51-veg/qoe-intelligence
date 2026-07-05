@@ -1,5 +1,5 @@
 """
-QoE Intelligence — AI-Powered Quality of Earnings Platform
+Artha — AI-Powered Earnings Diligence
 Run: streamlit run app/main.py
 """
 import sys, os
@@ -12,20 +12,20 @@ import tempfile
 
 from theme import CUSTOM_CSS
 from data.ingest import fetch_reported_financials, extract_pdf_text, find_relevant_footnote_sections
-from engine.qoe_engine import compute_reported_ebitda, screen_rule_based_adjustments, build_ebitda_bridge
+from engine.qoe_engine import (compute_reported_ebitda, screen_rule_based_adjustments,
+                                 build_ebitda_bridge, plain_english_conclusion)
 from ai.qoe_ai import identify_footnote_red_flags, generate_qoe_memo
+from export.pdf_export import build_pdf_report
 
-st.set_page_config(page_title="QoE Intelligence", layout="wide", page_icon="📊",
+st.set_page_config(page_title="Artha", layout="wide", page_icon="📊",
                     initial_sidebar_state="expanded")
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
-# ---------- REPORT HEADER ----------
+# ---------- HEADER ----------
 st.markdown("""
 <div class="report-header">
-    <div class="eyebrow">Financial Due Diligence</div>
-    <h1>QoE Intelligence</h1>
-    <div class="subtitle">AI-augmented quality of earnings analysis and normalized EBITDA reporting</div>
-    <div class="confidential">Draft for internal discussion purposes only — not investment advice</div>
+    <h1>Artha</h1>
+    <div class="subtitle">AI-powered earnings diligence and normalized EBITDA analysis</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -35,13 +35,6 @@ ticker = st.sidebar.text_input("Company ticker (NSE, e.g. TATASTEEL.NS)", value=
 uploaded_pdf = st.sidebar.file_uploader("Upload Annual Report (PDF, optional)", type=["pdf"])
 wc_threshold = st.sidebar.slider("Working capital swing threshold (%)", 10, 50, 25)
 run = st.sidebar.button("Run QoE Analysis")
-
-st.sidebar.markdown("---")
-st.sidebar.caption(
-    "Ticker pulls reported financials automatically. Uploading the annual report "
-    "enables footnote-level red flag detection — the qualitative layer a "
-    "ratio screen alone cannot see."
-)
 
 if not run:
     st.info("Enter a ticker in the sidebar and click **Run QoE Analysis** to generate "
@@ -77,6 +70,7 @@ adjustments = screen_rule_based_adjustments(
     working_capital_swing_threshold_pct=wc_threshold
 )
 bridge = build_ebitda_bridge(reported_ebitda, adjustments)
+conclusion = plain_english_conclusion(bridge)
 
 # ---------- STEP 3: FOOTNOTE AI SCREEN (if PDF uploaded) ----------
 footnote_flags = []
@@ -91,6 +85,10 @@ if uploaded_pdf is not None:
             footnote_flags = identify_footnote_red_flags(relevant_text, company_name)
         except RuntimeError as e:
             st.warning(f"AI footnote screen skipped: {e}")
+
+# ---------- THE BOTTOM LINE (plain-English conclusion) ----------
+st.markdown('<div class="exhibit-label">The Bottom Line</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="conclusion-block">{conclusion}</div>', unsafe_allow_html=True)
 
 # ---------- EXHIBIT 2: EBITDA BRIDGE ----------
 st.markdown('<div class="exhibit-label">Exhibit 2 — EBITDA Normalization Bridge</div>', unsafe_allow_html=True)
@@ -156,18 +154,32 @@ if footnote_flags:
 
 # ---------- EXHIBIT 5: AI-DRAFTED QOE MEMO ----------
 st.markdown('<div class="exhibit-label">Exhibit 5 — Quality of Earnings Memorandum</div>', unsafe_allow_html=True)
+
+if "memo_text" not in st.session_state:
+    st.session_state.memo_text = None
+
 if st.button("Generate QoE Memo"):
     with st.spinner("Drafting memo from engine output..."):
         try:
-            memo = generate_qoe_memo(company_name, bridge, footnote_flags)
-            st.markdown(f'<div class="memo-block">{memo}</div>', unsafe_allow_html=True)
+            st.session_state.memo_text = generate_qoe_memo(company_name, bridge, footnote_flags)
         except RuntimeError as e:
             st.error(str(e))
 
+if st.session_state.memo_text:
+    st.markdown(f'<div class="memo-block">{st.session_state.memo_text}</div>', unsafe_allow_html=True)
+
+    pdf_bytes = build_pdf_report(company_name, bridge, conclusion, st.session_state.memo_text)
+    st.download_button(
+        label="Download PDF Report",
+        data=pdf_bytes,
+        file_name=f"Artha_QoE_{company_name.replace(' ', '_')}.pdf",
+        mime="application/pdf",
+    )
+
 st.markdown("""
 <div class="report-footer">
-    QoE Intelligence — analysis generated from publicly reported financial data and,
-    where provided, user-uploaded disclosures. This output is for illustrative and
-    educational purposes and does not constitute due diligence, audit, or investment advice.
+    Artha — analysis generated from publicly reported financial data and,
+    where provided, user-uploaded disclosures. For illustrative purposes only;
+    not investment or audit advice.
 </div>
 """, unsafe_allow_html=True)

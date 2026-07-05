@@ -1,5 +1,5 @@
 """Custom CSS - dark advisory-grade theme, Fraunces serif headers + Inter body,
-muted gold accent. Sidebar is forced permanently open (no collapse toggle)."""
+muted gold accent. Sidebar forced permanently open."""
 
 CUSTOM_CSS = """
 <style>
@@ -30,7 +30,6 @@ html, body, [class*="css"] {
 [data-testid="stSidebarCollapseButton"] { display: none !important; }
 button[kind="header"] { display: none !important; }
 
-/* Force sidebar permanently open - no collapse possible */
 [data-testid="stSidebar"] {
     min-width: 320px !important;
     max-width: 320px !important;
@@ -53,31 +52,17 @@ button[kind="header"] { display: none !important; }
     margin-bottom: 28px;
     border-bottom: 1px solid var(--border);
 }
-.report-header .eyebrow {
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 600;
-}
 .report-header h1 {
     font-family: 'Fraunces', serif;
     font-weight: 600;
-    font-size: 2.3rem;
+    font-size: 2.6rem;
     color: var(--text-primary);
-    margin: 6px 0 4px 0;
+    margin: 0 0 6px 0;
     letter-spacing: -0.5px;
 }
 .report-header .subtitle {
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     color: var(--text-dim);
-}
-.report-header .confidential {
-    margin-top: 14px;
-    font-size: 0.68rem;
-    color: var(--text-faint);
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
 }
 
 /* Exhibit labels */
@@ -112,6 +97,17 @@ button[kind="header"] { display: none !important; }
     font-weight: 600;
     color: var(--gold-bright);
     margin-top: 6px;
+}
+
+/* Conclusion callout */
+.conclusion-block {
+    background: var(--bg-surface-2);
+    border-left: 4px solid var(--gold);
+    border-radius: 6px;
+    padding: 22px 26px;
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: var(--text-primary);
 }
 
 /* Risk flags */
@@ -160,7 +156,7 @@ button[kind="header"] { display: none !important; }
     border-radius: 6px !important;
 }
 
-.stButton > button {
+.stButton > button, .stDownloadButton > button {
     background: var(--gold);
     color: #0B0E16;
     border: none;
@@ -169,7 +165,7 @@ button[kind="header"] { display: none !important; }
     letter-spacing: 0.2px;
     padding: 10px 22px;
 }
-.stButton > button:hover { background: var(--gold-bright); color: #0B0E16; }
+.stButton > button:hover, .stDownloadButton > button:hover { background: var(--gold-bright); color: #0B0E16; }
 
 .report-footer {
     margin-top: 44px;
